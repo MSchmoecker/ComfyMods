@@ -91,6 +91,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="ContentWithinPreview.png" />
     <Content Include="icon.png" />
   </ItemGroup>
   <ItemGroup>
