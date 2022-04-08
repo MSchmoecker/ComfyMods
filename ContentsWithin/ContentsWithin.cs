@@ -7,9 +7,9 @@ using UnityEngine;
 namespace ContentsWithin {
   [BepInPlugin(PluginGUID, PluginName, PluginVersion)]
   public class ContentsWithin : BaseUnityPlugin {
-    public const string PluginGUID = "redseiko.valheim.contentswithin";
+    public const string PluginGUID = "com.maxsch.valheim.contentswithin";
     public const string PluginName = "ContentsWithin";
-    public const string PluginVersion = "1.0.1";
+    public const string PluginVersion = "2.0.0";
 
     static ConfigEntry<bool> _isModEnabled;
     static ConfigEntry<KeyboardShortcut> _toggleShowContentsShortcut;
