@@ -10,7 +10,7 @@ namespace ContentsWithin {
   public class ContentsWithin : BaseUnityPlugin {
     public const string PluginGUID = "com.maxsch.valheim.contentswithin";
     public const string PluginName = "ContentsWithin";
-    public const string PluginVersion = "2.0.0";
+    public const string PluginVersion = "2.0.1";
 
     static ConfigEntry<bool> _isModEnabled;
     static ConfigEntry<KeyboardShortcut> _toggleShowContentsShortcut;

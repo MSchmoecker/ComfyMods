@@ -8,8 +8,8 @@ Show the contents of any chests when hovering over it **using the existing conta
 ![Showcase](https://raw.githubusercontent.com/MSchmoecker/ComfyMods/fa1ed01535dc93e83a9319a5d29a8641057017f5/ContentsWithin/ContentWithinPreview.png)
 
 This is a reworked fork of [Redseiko's ContentsWithin](https://valheim.thunderstore.io/package/ComfyMods/ContentsWithin/), licensed under GPL-3.0,
-that doesn't transpile player methods but only patches GUI methods. This makes it compatible with [MultiUserChest](https://valheim.thunderstore.io/package/MSchmoecker/MultiUserChest/)
-and maybe even a few other mods.
+that doesn't transpile player methods but only patches GUI methods. This makes it compatible with [MultiUserChest](https://valheim.thunderstore.io/package/MSchmoecker/MultiUserChest/),
+Auga and maybe even a few other mods.
 
 ## Installation
 This mod requires [BepInEx](https://valheim.thunderstore.io/package/denikson/BepInExPack_Valheim/).
@@ -39,6 +39,9 @@ Extract all files to `BepInEx/plugins/ContentsWithin`
 
 
 ## Changelog
+2.0.1
+ * Fixed invisible durability bar bug of chests
+ * Added compatibility for Auga
 
 2.0.0
   * Reworked code to not use transpiler but only rely on GUI methods
