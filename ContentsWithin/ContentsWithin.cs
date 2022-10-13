@@ -22,7 +22,6 @@ namespace ContentsWithin {
     static GameObject _lastHoverObject = null;
 
     static GameObject _inventoryPanel;
-    static GameObject _containerPanel;
     static GameObject _infoPanel;
     static GameObject _craftingPanel;
     static GameObject _takeAllButton;
@@ -92,7 +91,6 @@ namespace ContentsWithin {
       [HarmonyPatch(nameof(InventoryGui.Awake)), HarmonyPostfix, HarmonyPriority(Priority.Low)]
       public static void AwakePostfix(ref InventoryGui __instance) {
         _inventoryPanel = __instance.m_player.Ref()?.gameObject;
-        _containerPanel = __instance.m_container.Ref()?.gameObject;
         _infoPanel = __instance.m_infoPanel.Ref()?.gameObject;
         _craftingPanel = __instance.m_inventoryRoot.Find("Crafting").Ref()?.gameObject;
         _takeAllButton = __instance.m_takeAllButton.Ref()?.gameObject;
