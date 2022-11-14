@@ -1,4 +1,5 @@
-﻿using BepInEx;
+﻿using System.Collections.Generic;
+using BepInEx;
 using BepInEx.Configuration;
 using HarmonyLib;
 using System.Reflection;
@@ -12,22 +13,23 @@ namespace ContentsWithin {
     public const string PluginName = "ContentsWithin";
     public const string PluginVersion = "2.0.1";
 
-    static ConfigEntry<bool> _isModEnabled;
-    static ConfigEntry<KeyboardShortcut> _toggleShowContentsShortcut;
+    private static ConfigEntry<bool> _isModEnabled;
+    private static ConfigEntry<KeyboardShortcut> _toggleShowContentsShortcut;
 
     private static bool isRealGuiVisible;
     private static bool showContent = true;
 
-    static Container _lastHoverContainer = null;
-    static GameObject _lastHoverObject = null;
+    private static HashSet<InventoryGrid> initializedGrids = new HashSet<InventoryGrid>();
 
-    static GameObject _inventoryPanel;
-    static GameObject _containerPanel;
-    static GameObject _infoPanel;
-    static GameObject _craftingPanel;
-    static GameObject _takeAllButton;
+    private static Container _lastHoverContainer;
+    private  static GameObject _lastHoverObject;
 
-    Harmony _harmony;
+    private static GameObject _inventoryPanel;
+    private static GameObject _infoPanel;
+    private static GameObject _craftingPanel;
+    private static GameObject _takeAllButton;
+
+    private Harmony _harmony;
 
     public void Awake() {
       _isModEnabled = Config.Bind("_Global", "isModEnabled", true, "Globally enable or disable this mod.");
@@ -87,12 +89,19 @@ namespace ContentsWithin {
       }
     }
 
+    [HarmonyPatch(typeof(InventoryGrid))]
+    public static class InventoryGridPatch {
+      [HarmonyPatch(nameof(InventoryGrid.Awake)), HarmonyPostfix]
+      public static void AwakePostfix(InventoryGrid __instance) {
+        initializedGrids.Add(__instance);
+      }
+    }
+
     [HarmonyPatch(typeof(InventoryGui))]
     public class InventoryGuiPatch {
       [HarmonyPatch(nameof(InventoryGui.Awake)), HarmonyPostfix, HarmonyPriority(Priority.Low)]
       public static void AwakePostfix(ref InventoryGui __instance) {
         _inventoryPanel = __instance.m_player.Ref()?.gameObject;
-        _containerPanel = __instance.m_container.Ref()?.gameObject;
         _infoPanel = __instance.m_infoPanel.Ref()?.gameObject;
         _craftingPanel = __instance.m_inventoryRoot.Find("Crafting").Ref()?.gameObject;
         _takeAllButton = __instance.m_takeAllButton.Ref()?.gameObject;
@@ -157,6 +166,12 @@ namespace ContentsWithin {
         InventoryGui.instance.m_animator.SetBool("visible", true);
         InventoryGui.instance.m_hiddenFrames = 10;
         InventoryGui.instance.m_container.gameObject.SetActive(true);
+
+        // wait one frame to let the grid initialize properly
+        if (!initializedGrids.Contains(InventoryGui.instance.m_containerGrid)) {
+          return;
+        }
+
         InventoryGui.instance.m_containerGrid.UpdateInventory(_lastHoverContainer.GetInventory(), null, null);
         InventoryGui.instance.m_containerGrid.ResetView();
         InventoryGui.instance.m_containerName.text = Localization.instance.Localize(_lastHoverContainer.GetInventory().GetName());
