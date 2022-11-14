@@ -1,4 +1,4 @@
-﻿# ContentsWithin
+# ContentsWithin
 
 
 ## About
@@ -7,11 +7,14 @@ Show the contents of any chests when hovering over it **using the existing conta
 
 ![Showcase](https://raw.githubusercontent.com/MSchmoecker/ComfyMods/fa1ed01535dc93e83a9319a5d29a8641057017f5/ContentsWithin/ContentWithinPreview.png)
 
-This is a reworked fork of [Redseiko's ContentsWithin](https://valheim.thunderstore.io/package/ComfyMods/ContentsWithin/), licensed under GPL-3.0,
-that doesn't transpile player methods but only patches GUI methods. This makes it compatible with [MultiUserChest](https://valheim.thunderstore.io/package/MSchmoecker/MultiUserChest/),
-Auga and maybe even a few other mods.
+This mod is a reworked fork of [Redseiko's ContentsWithin](https://valheim.thunderstore.io/package/ComfyMods/ContentsWithin/), licensed under GPL-3.0, that doesn't transpile player methods but only patches GUI methods.
 
-## Installation
+This change makes it compatible with [MultiUserChest](https://valheim.thunderstore.io/package/MSchmoecker/MultiUserChest/), [Auga](https://valheim.thunderstore.io/package/RandyKnapp/Auga/) and maybe even a few other mods.
+Additionally it fixes a few minor bugs like the mouse beeing visible for shorts periods of time or being able to move items while the ESC manu is open.
+See the changelog for more information.
+
+
+## Manual Installation
 This mod requires [BepInEx](https://valheim.thunderstore.io/package/denikson/BepInExPack_Valheim/).
 Extract all files to `BepInEx/plugins/ContentsWithin`
 
@@ -35,10 +38,13 @@ Extract all files to `BepInEx/plugins/ContentsWithin`
 ## Links
 - Thunderstore: https://valheim.thunderstore.io/package/MSchmoecker/ContentsWithin/
 - Github: https://github.com/MSchmoecker/ComfyMods/tree/fork-upload/ContentsWithin/
-- Discord: Margmas#9562
+- Discord: Margmas#9562. Feel free to DM or ping me in the [Jötunn discord](https://discord.gg/DdUt6g7gyA)
 
 
 ## Changelog
+2.0.2
+ * Fixed a conflict with [Jewelcrafting](https://valheim.thunderstore.io/package/Smoothbrain/Jewelcrafting/)
+
 2.0.1
  * Fixed invisible durability bar bug of chests
  * Added compatibility for Auga
