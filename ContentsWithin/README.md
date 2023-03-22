@@ -42,6 +42,12 @@ Extract all files to `BepInEx/plugins/ContentsWithin`
 
 
 ## Changelog
+2.1.0
+ * Added an option to start the game with the container contents hidden
+ * Added a short delay before the UI is closed. This reduces the amount of animations when switching between chests. Can be adjusted in the config
+ * Removed patch of the invisible durability bar bug, this is now fixed in the vanilla game
+ * Internal code cleanup
+
 2.0.2
  * Fixed a conflict with [Jewelcrafting](https://valheim.thunderstore.io/package/Smoothbrain/Jewelcrafting/)
 
