@@ -14,6 +14,7 @@ namespace ContentsWithin {
     public const string PluginVersion = "2.0.2";
 
     private static ConfigEntry<bool> _isModEnabled;
+    private static ConfigEntry<bool> startHidden;
     private static ConfigEntry<KeyboardShortcut> _toggleShowContentsShortcut;
     private static ConfigEntry<float> openDelayTime;
 
@@ -35,7 +36,10 @@ namespace ContentsWithin {
     private Harmony _harmony;
 
     public void Awake() {
-      _isModEnabled = Config.Bind("_Global", "isModEnabled", true, "Globally enable or disable this mod.");
+      _isModEnabled = Config.Bind("_Global", "isModEnabled", true, "Globally enable or disable this mod. When disabled, no container contents will be shown and hotkeys will not work.");
+      startHidden = Config.Bind("Settings", "startHidden", false, "Hide the container contents until the hotkey is pressed.");
+
+      showContent = !startHidden.Value;
 
       _toggleShowContentsShortcut =
           Config.Bind(
