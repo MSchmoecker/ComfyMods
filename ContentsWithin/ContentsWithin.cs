@@ -15,9 +15,12 @@ namespace ContentsWithin {
 
     private static ConfigEntry<bool> _isModEnabled;
     private static ConfigEntry<KeyboardShortcut> _toggleShowContentsShortcut;
+    private static ConfigEntry<float> openDelayTime;
 
     private static bool isRealGuiVisible;
     private static bool showContent = true;
+    private static float delayTime;
+    private static Inventory emptyInventory = new Inventory("", null, 0, 0);
 
     private static HashSet<InventoryGrid> initializedGrids = new HashSet<InventoryGrid>();
 
@@ -40,6 +43,8 @@ namespace ContentsWithin {
               "toggleShowContentsShortcut",
               new KeyboardShortcut(KeyCode.P, KeyCode.RightShift),
               "Shortcut to toggle on/off the 'show container contents' feature.");
+
+      openDelayTime = Config.Bind("Settings", "openDelayTime", 0.3f, "Time before the UI is closed when not hovering over a chest. This reduces the amount of animations when switching between chests.");
 
       _harmony = Harmony.CreateAndPatchAll(Assembly.GetExecutingAssembly(), harmonyInstanceId: PluginGUID);
     }
@@ -140,9 +145,14 @@ namespace ContentsWithin {
         }
 
         if (HasContainerAccess(_lastHoverContainer)) {
-          ShowPreviewContainer();
+          ShowPreviewContainer(_lastHoverContainer.GetInventory());
+          delayTime = openDelayTime.Value;
+        } else if (delayTime > 0) {
+          ShowPreviewContainer(emptyInventory);
+          delayTime -= Time.deltaTime;
         } else {
           InventoryGui.instance.m_animator.SetBool("visible", false);
+          delayTime = 0;
         }
       }
 
@@ -162,7 +172,7 @@ namespace ContentsWithin {
         return ShowRealGUI();
       }
 
-      private static void ShowPreviewContainer() {
+      private static void ShowPreviewContainer(Inventory container) {
         InventoryGui.instance.m_animator.SetBool("visible", true);
         InventoryGui.instance.m_hiddenFrames = 10;
         InventoryGui.instance.m_container.gameObject.SetActive(true);
@@ -172,10 +182,10 @@ namespace ContentsWithin {
           return;
         }
 
-        InventoryGui.instance.m_containerGrid.UpdateInventory(_lastHoverContainer.GetInventory(), null, null);
+        InventoryGui.instance.m_containerGrid.UpdateInventory(container, null, null);
         InventoryGui.instance.m_containerGrid.ResetView();
-        InventoryGui.instance.m_containerName.text = Localization.instance.Localize(_lastHoverContainer.GetInventory().GetName());
-        int containerWeight = Mathf.CeilToInt(_lastHoverContainer.GetInventory().GetTotalWeight());
+        InventoryGui.instance.m_containerName.text = Localization.instance.Localize(container.GetName());
+        int containerWeight = Mathf.CeilToInt(container.GetTotalWeight());
         InventoryGui.instance.m_containerWeight.text = containerWeight.ToString();
       }
     }
