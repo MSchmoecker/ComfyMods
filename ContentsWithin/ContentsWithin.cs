@@ -13,9 +13,9 @@ namespace ContentsWithin {
     public const string PluginName = "ContentsWithin";
     public const string PluginVersion = "2.0.2";
 
-    private static ConfigEntry<bool> _isModEnabled;
+    private static ConfigEntry<bool> isModEnabled;
     private static ConfigEntry<bool> startHidden;
-    private static ConfigEntry<KeyboardShortcut> _toggleShowContentsShortcut;
+    private static ConfigEntry<KeyboardShortcut> toggleShowContentsShortcut;
     private static ConfigEntry<float> openDelayTime;
 
     private static bool isRealGuiVisible;
@@ -25,40 +25,34 @@ namespace ContentsWithin {
 
     private static HashSet<InventoryGrid> initializedGrids = new HashSet<InventoryGrid>();
 
-    private static Container _lastHoverContainer;
-    private  static GameObject _lastHoverObject;
+    private static Container lastHoverContainer;
+    private static GameObject lastHoverObject;
 
-    private static GameObject _inventoryPanel;
-    private static GameObject _infoPanel;
-    private static GameObject _craftingPanel;
-    private static GameObject _takeAllButton;
+    private static GameObject inventoryPanel;
+    private static GameObject infoPanel;
+    private static GameObject craftingPanel;
+    private static GameObject takeAllButton;
 
-    private Harmony _harmony;
+    private Harmony harmony;
 
     public void Awake() {
-      _isModEnabled = Config.Bind("_Global", "isModEnabled", true, "Globally enable or disable this mod. When disabled, no container contents will be shown and hotkeys will not work.");
+      isModEnabled = Config.Bind("_Global", "isModEnabled", true, "Globally enable or disable this mod. When disabled, no container contents will be shown and hotkeys will not work.");
       startHidden = Config.Bind("Settings", "startHidden", false, "Hide the container contents until the hotkey is pressed.");
+      openDelayTime = Config.Bind("Settings", "openDelayTime", 0.3f, "Time before the UI is closed when not hovering over a chest. This reduces the amount of animations when switching between chests.");
+      toggleShowContentsShortcut = Config.Bind("Hotkeys", "toggleShowContentsShortcut", new KeyboardShortcut(KeyCode.P, KeyCode.RightShift), "Shortcut to toggle on/off the 'show container contents' feature.");
 
       showContent = !startHidden.Value;
 
-      _toggleShowContentsShortcut =
-          Config.Bind(
-              "Hotkeys",
-              "toggleShowContentsShortcut",
-              new KeyboardShortcut(KeyCode.P, KeyCode.RightShift),
-              "Shortcut to toggle on/off the 'show container contents' feature.");
-
-      openDelayTime = Config.Bind("Settings", "openDelayTime", 0.3f, "Time before the UI is closed when not hovering over a chest. This reduces the amount of animations when switching between chests.");
-
-      _harmony = Harmony.CreateAndPatchAll(Assembly.GetExecutingAssembly(), harmonyInstanceId: PluginGUID);
+      harmony = new Harmony(PluginGUID);
+      harmony.PatchAll();
     }
 
     private void Update() {
-      if (!_isModEnabled.Value) {
+      if (!isModEnabled.Value) {
         return;
       }
 
-      if (_toggleShowContentsShortcut.Value.IsDown()) {
+      if (toggleShowContentsShortcut.Value.IsDown()) {
         showContent = !showContent;
 
         if (MessageHud.instance) {
@@ -72,19 +66,19 @@ namespace ContentsWithin {
     }
 
     private static bool ShowRealGUI() {
-      return !_isModEnabled.Value || !showContent || isRealGuiVisible;
+      return !isModEnabled.Value || !showContent || isRealGuiVisible;
     }
 
     [HarmonyPatch(typeof(Player))]
     public class PlayerPatch {
       [HarmonyPatch(nameof(Player.UpdateHover)), HarmonyPostfix]
       public static void UpdateHoverPostfix(Player __instance) {
-        if (!_isModEnabled.Value || _lastHoverObject == __instance.m_hovering) {
+        if (!isModEnabled.Value || lastHoverObject == __instance.m_hovering) {
           return;
         }
 
-        _lastHoverObject = __instance.m_hovering;
-        _lastHoverContainer = _lastHoverObject ? _lastHoverObject.GetComponentInParent<Container>() : null;
+        lastHoverObject = __instance.m_hovering;
+        lastHoverContainer = lastHoverObject ? lastHoverObject.GetComponentInParent<Container>() : null;
       }
     }
 
@@ -100,13 +94,13 @@ namespace ContentsWithin {
     public class InventoryGuiPatch {
       [HarmonyPatch(nameof(InventoryGui.Awake)), HarmonyPostfix, HarmonyPriority(Priority.Low)]
       public static void AwakePostfix(ref InventoryGui __instance) {
-        _inventoryPanel = __instance.m_player.Ref()?.gameObject;
-        _infoPanel = __instance.m_infoPanel.Ref()?.gameObject;
-        _craftingPanel = __instance.m_inventoryRoot.Find("Crafting").Ref()?.gameObject;
-        _takeAllButton = __instance.m_takeAllButton.Ref()?.gameObject;
+        inventoryPanel = __instance.m_player.Ref()?.gameObject;
+        infoPanel = __instance.m_infoPanel.Ref()?.gameObject;
+        craftingPanel = __instance.m_inventoryRoot.Find("Crafting").Ref()?.gameObject;
+        takeAllButton = __instance.m_takeAllButton.Ref()?.gameObject;
 
         if (Chainloader.PluginInfos.ContainsKey("randyknapp.mods.auga")) {
-          _craftingPanel = __instance.m_inventoryRoot.Find("RightPanel").Ref()?.gameObject;
+          craftingPanel = __instance.m_inventoryRoot.Find("RightPanel").Ref()?.gameObject;
         }
       }
 
@@ -129,17 +123,17 @@ namespace ContentsWithin {
 
       [HarmonyPatch(nameof(InventoryGui.Update)), HarmonyPostfix]
       public static void UpdatePostfix(InventoryGui __instance) {
-        _inventoryPanel.Ref()?.SetActive(ShowRealGUI());
-        _craftingPanel.Ref()?.SetActive(ShowRealGUI());
-        _infoPanel.Ref()?.SetActive(ShowRealGUI());
-        _takeAllButton.Ref()?.SetActive(ShowRealGUI());
+        inventoryPanel.Ref()?.SetActive(ShowRealGUI());
+        craftingPanel.Ref()?.SetActive(ShowRealGUI());
+        infoPanel.Ref()?.SetActive(ShowRealGUI());
+        takeAllButton.Ref()?.SetActive(ShowRealGUI());
 
         if (ShowRealGUI()) {
           return;
         }
 
-        if (HasContainerAccess(_lastHoverContainer)) {
-          ShowPreviewContainer(_lastHoverContainer.GetInventory());
+        if (HasContainerAccess(lastHoverContainer)) {
+          ShowPreviewContainer(lastHoverContainer.GetInventory());
           delayTime = openDelayTime.Value;
         } else if (delayTime > 0) {
           ShowPreviewContainer(emptyInventory);
