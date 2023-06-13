@@ -42,6 +42,10 @@ Extract all files to `BepInEx/plugins/ContentsWithin`
 
 
 ## Changelog
+
+2.1.1
+ * Update for Valheim 0.216.9
+
 2.1.0
  * Added an option to start the game with the container contents hidden
  * Added a short delay before the UI is closed. This reduces the amount of animations when switching between chests. Can be adjusted in the config
