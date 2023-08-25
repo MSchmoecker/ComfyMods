@@ -32,6 +32,7 @@ namespace ContentsWithin {
     private static GameObject infoPanel;
     private static GameObject craftingPanel;
     private static GameObject takeAllButton;
+    private static GameObject stackAllButton;
 
     private Harmony harmony;
 
@@ -98,6 +99,7 @@ namespace ContentsWithin {
         infoPanel = __instance.m_infoPanel.Ref()?.gameObject;
         craftingPanel = __instance.m_inventoryRoot.Find("Crafting").Ref()?.gameObject;
         takeAllButton = __instance.m_takeAllButton.Ref()?.gameObject;
+        stackAllButton = __instance.m_stackAllButton.Ref()?.gameObject;
 
         if (Chainloader.PluginInfos.ContainsKey("randyknapp.mods.auga")) {
           craftingPanel = __instance.m_inventoryRoot.Find("RightPanel").Ref()?.gameObject;
@@ -127,6 +129,7 @@ namespace ContentsWithin {
         craftingPanel.Ref()?.SetActive(ShowRealGUI());
         infoPanel.Ref()?.SetActive(ShowRealGUI());
         takeAllButton.Ref()?.SetActive(ShowRealGUI());
+        stackAllButton.Ref()?.SetActive(ShowRealGUI());
 
         if (ShowRealGUI()) {
           return;
