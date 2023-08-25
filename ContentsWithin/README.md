@@ -43,6 +43,9 @@ Extract all files to `BepInEx/plugins/ContentsWithin`
 
 ## Changelog
 
+2.1.2
+ * Update for 0.217.14 (Hildir's Request), hiding the stack all button when hovering over a chest
+
 2.1.1
  * Update for Valheim 0.216.9
 
