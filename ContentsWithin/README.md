@@ -43,6 +43,10 @@ Extract all files to `BepInEx/plugins/ContentsWithin`
 
 ## Changelog
 
+2.1.3
+ * Updated for Valheim 0.217.22, not compatible with older versions
+ * Updated and compiled for BepInExPack 5.4.2200
+
 2.1.2
  * Update for 0.217.14 (Hildir's Request), hiding the stack all button when hovering over a chest
 
