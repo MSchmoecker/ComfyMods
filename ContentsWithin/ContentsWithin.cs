@@ -131,6 +131,26 @@ namespace ContentsWithin {
         takeAllButton.Ref()?.SetActive(ShowRealGUI());
         stackAllButton.Ref()?.SetActive(ShowRealGUI());
 
+        if (takeAllButton && Chainloader.PluginInfos.ContainsKey("goldenrevolver.quick_stack_store")) {
+
+          // technically, this is based on a config value, but I don't think anyone
+          // will ever use quickstackstore with the base game 'place stacks' button
+          stackAllButton.Ref()?.SetActive(false);
+
+          // 'foreach in transform' only looks at direct children, so it's pretty performant for this use case
+          // we can't save references to them because quickstackstore can destroy and respawn them in various situations
+          foreach (Transform item in takeAllButton.transform.parent) {
+            switch (item.name) {
+              case "quickStackToContainerButton":
+              case "storeAllButton":
+              case "sortContainerButton":
+              case "restockFromContainerButton":
+                item.gameObject.SetActive(ShowRealGUI());
+                break;
+            }
+          }
+        }
+
         if (ShowRealGUI()) {
           return;
         }
