@@ -140,8 +140,8 @@ namespace ContentsWithin {
           foreach (Transform item in takeAllButton.transform.parent) {
             switch (item.name) {
               case "quickStackToContainerButton":
-			    foundModdedQuickStackButton = true;
-				item.gameObject.SetActive(ShowRealGUI());
+                foundModdedQuickStackButton = true;
+                item.gameObject.SetActive(ShowRealGUI());
                 break;
 
               case "storeAllButton":
@@ -151,14 +151,14 @@ namespace ContentsWithin {
                 break;
             }
           }
-		  
-		  // only hide when we found the modded quick stack button, in case someone is
-		  // in quickstackstore 'hotkey only' mode where it does not affect the ui
-		  if (foundModdedQuickStackButton) {
-		    // technically, this is based on a config value, but I don't think anyone
+          
+          // only hide when we found the modded quick stack button, in case someone is
+          // in quickstackstore 'hotkey only' mode where it does not affect the ui
+          if (foundModdedQuickStackButton) {
+            // technically, this is based on a config value, but I don't think anyone
             // will ever have both buttons enabled
             stackAllButton.Ref()?.SetActive(false);
-		  }
+          }
         }
 
         if (ShowRealGUI()) {
