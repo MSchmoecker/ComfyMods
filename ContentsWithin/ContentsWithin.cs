@@ -133,15 +133,17 @@ namespace ContentsWithin {
 
         if (takeAllButton && Chainloader.PluginInfos.ContainsKey("goldenrevolver.quick_stack_store")) {
 
-          // technically, this is based on a config value, but I don't think anyone
-          // will ever use quickstackstore with the base game 'place stacks' button
-          stackAllButton.Ref()?.SetActive(false);
+          bool foundModdedQuickStackButton = false;
 
           // 'foreach in transform' only looks at direct children, so it's pretty performant for this use case
           // we can't save references to them because quickstackstore can destroy and respawn them in various situations
           foreach (Transform item in takeAllButton.transform.parent) {
             switch (item.name) {
               case "quickStackToContainerButton":
+			    foundModdedQuickStackButton = true;
+				item.gameObject.SetActive(ShowRealGUI());
+                break;
+
               case "storeAllButton":
               case "sortContainerButton":
               case "restockFromContainerButton":
@@ -149,6 +151,14 @@ namespace ContentsWithin {
                 break;
             }
           }
+		  
+		  // only hide when we found the modded quick stack button, in case someone is
+		  // in quickstackstore 'hotkey only' mode where it does not affect the ui
+		  if (foundModdedQuickStackButton) {
+		    // technically, this is based on a config value, but I don't think anyone
+            // will ever have both buttons enabled
+            stackAllButton.Ref()?.SetActive(false);
+		  }
         }
 
         if (ShowRealGUI()) {
