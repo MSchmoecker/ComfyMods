@@ -11,7 +11,7 @@ namespace ContentsWithin {
   public class ContentsWithin : BaseUnityPlugin {
     public const string PluginGUID = "com.maxsch.valheim.contentswithin";
     public const string PluginName = "ContentsWithin";
-    public const string PluginVersion = "2.1.3";
+    public const string PluginVersion = "2.1.4";
 
     private static ConfigEntry<bool> isModEnabled;
     private static ConfigEntry<bool> startHidden;
@@ -130,6 +130,36 @@ namespace ContentsWithin {
         infoPanel.Ref()?.SetActive(ShowRealGUI());
         takeAllButton.Ref()?.SetActive(ShowRealGUI());
         stackAllButton.Ref()?.SetActive(ShowRealGUI());
+
+        if (takeAllButton && Chainloader.PluginInfos.ContainsKey("goldenrevolver.quick_stack_store")) {
+
+          bool foundModdedQuickStackButton = false;
+
+          // 'foreach in transform' only looks at direct children, so it's pretty performant for this use case
+          // we can't save references to them because quickstackstore can destroy and respawn them in various situations
+          foreach (Transform item in takeAllButton.transform.parent) {
+            switch (item.name) {
+              case "quickStackToContainerButton":
+                foundModdedQuickStackButton = true;
+                item.gameObject.SetActive(ShowRealGUI());
+                break;
+
+              case "storeAllButton":
+              case "sortContainerButton":
+              case "restockFromContainerButton":
+                item.gameObject.SetActive(ShowRealGUI());
+                break;
+            }
+          }
+          
+          // only hide when we found the modded quick stack button, in case someone is
+          // in quickstackstore 'hotkey only' mode where it does not affect the ui
+          if (foundModdedQuickStackButton) {
+            // technically, this is based on a config value, but I don't think anyone
+            // will ever have both buttons enabled
+            stackAllButton.Ref()?.SetActive(false);
+          }
+        }
 
         if (ShowRealGUI()) {
           return;
