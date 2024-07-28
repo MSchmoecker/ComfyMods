@@ -4,6 +4,6 @@
     "description": "Show the contents of any chest when hovering over it",
     "website_url": "https://github.com/MSchmoecker/ComfyMods/tree/fork-upload/ContentsWithin",
     "dependencies": [
-      "denikson-BepInExPack_Valheim-5.4.2200"
+      "denikson-BepInExPack_Valheim-5.4.2202"
     ]
 }
