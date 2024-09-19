@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using BepInEx;
 using BepInEx.Configuration;
 using HarmonyLib;
@@ -8,6 +9,7 @@ using UnityEngine;
 
 namespace ContentsWithin {
   [BepInPlugin(PluginGUID, PluginName, PluginVersion)]
+  [BepInDependency("org.bepinex.plugins.jewelcrafting", BepInDependency.DependencyFlags.SoftDependency)]
   public class ContentsWithin : BaseUnityPlugin {
     public const string PluginGUID = "com.maxsch.valheim.contentswithin";
     public const string PluginName = "ContentsWithin";
@@ -36,6 +38,13 @@ namespace ContentsWithin {
 
     private Harmony harmony;
 
+    private static FieldInfo? jewelcraftingOpenInventoryField;
+
+    private static FieldInfo? GetJewelcraftingOpenInventoryField() {
+      Type addFakeSocketsContainerType = AccessTools.TypeByName("Jewelcrafting.GemStones+AddFakeSocketsContainer");
+      return AccessTools.Field(addFakeSocketsContainerType, "openInventory");
+    }
+
     public void Awake() {
       isModEnabled = Config.Bind("_Global", "isModEnabled", true, "Globally enable or disable this mod. When disabled, no container contents will be shown and hotkeys will not work.");
       startHidden = Config.Bind("Settings", "startHidden", false, "Hide the container contents until the hotkey is pressed.");
@@ -46,6 +55,10 @@ namespace ContentsWithin {
 
       harmony = new Harmony(PluginGUID);
       harmony.PatchAll();
+
+      if (Chainloader.PluginInfos.ContainsKey("org.bepinex.plugins.jewelcrafting")) {
+        jewelcraftingOpenInventoryField = GetJewelcraftingOpenInventoryField();
+      }
     }
 
     private void Update() {
@@ -125,11 +138,18 @@ namespace ContentsWithin {
 
       [HarmonyPatch(nameof(InventoryGui.Update)), HarmonyPostfix]
       public static void UpdatePostfix(InventoryGui __instance) {
+        bool showStackButtons = true;
+
+        if (Chainloader.PluginInfos.ContainsKey("org.bepinex.plugins.jewelcrafting")) {
+          Inventory? openInventory = jewelcraftingOpenInventoryField?.GetValue(null) as Inventory;
+          showStackButtons = openInventory == null;
+        }
+
         inventoryPanel.Ref()?.SetActive(ShowRealGUI());
         craftingPanel.Ref()?.SetActive(ShowRealGUI());
         infoPanel.Ref()?.SetActive(ShowRealGUI());
-        takeAllButton.Ref()?.SetActive(ShowRealGUI());
-        stackAllButton.Ref()?.SetActive(ShowRealGUI());
+        takeAllButton.Ref()?.SetActive(showStackButtons && ShowRealGUI());
+        stackAllButton.Ref()?.SetActive(showStackButtons && ShowRealGUI());
 
         if (takeAllButton && Chainloader.PluginInfos.ContainsKey("goldenrevolver.quick_stack_store")) {
 
@@ -141,13 +161,13 @@ namespace ContentsWithin {
             switch (item.name) {
               case "quickStackToContainerButton":
                 foundModdedQuickStackButton = true;
-                item.gameObject.SetActive(ShowRealGUI());
+                item.gameObject.SetActive(showStackButtons && ShowRealGUI());
                 break;
 
               case "storeAllButton":
               case "sortContainerButton":
               case "restockFromContainerButton":
-                item.gameObject.SetActive(ShowRealGUI());
+                item.gameObject.SetActive(showStackButtons && ShowRealGUI());
                 break;
             }
           }
