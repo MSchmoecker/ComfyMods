@@ -13,7 +13,7 @@ namespace ContentsWithin {
   public class ContentsWithin : BaseUnityPlugin {
     public const string PluginGUID = "com.maxsch.valheim.contentswithin";
     public const string PluginName = "ContentsWithin";
-    public const string PluginVersion = "2.1.4";
+    public const string PluginVersion = "2.1.5";
 
     private static ConfigEntry<bool> isModEnabled;
     private static ConfigEntry<bool> startHidden;

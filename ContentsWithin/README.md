@@ -43,6 +43,9 @@ Extract all files to `BepInEx/plugins/ContentsWithin`
 
 ## Changelog
 
+2.1.5
+ * Fixed a conflict with Jewelcrafting where items can be moved out of sockets. Both TakeAll and PlaceStacks buttons are now always hidden on socketed items
+
 2.1.4
  * Added compatibility for 'Quick Stack - Store - Sort - Trash - Restock', hiding its chest buttons when hovering over a chest (thanks Goldenrevolver)
 
