@@ -1,6 +1,6 @@
 ﻿{
     "name": "ContentsWithin",
-    "version_number": "2.1.5",
+    "version_number": "2.1.6",
     "description": "Show the contents of any chest when hovering over it",
     "website_url": "https://github.com/MSchmoecker/ComfyMods/tree/fork-upload/ContentsWithin",
     "dependencies": [

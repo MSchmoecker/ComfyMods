@@ -43,6 +43,9 @@ Extract all files to `BepInEx/plugins/ContentsWithin`
 
 ## Changelog
 
+2.1.6
+ * Fixed a BepInEx cyclic dependency issue if certain mods are installed (AdventureBackpacks, Jewelcrafting, AAA_Crafting, AzuExtendedPlayerInventory and ContentsWithin)
+
 2.1.5
  * Fixed a conflict with Jewelcrafting where items can be moved out of sockets. Both TakeAll and PlaceStacks buttons are now always hidden on socketed items
 
