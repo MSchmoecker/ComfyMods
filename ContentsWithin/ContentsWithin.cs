@@ -9,7 +9,6 @@ using UnityEngine;
 
 namespace ContentsWithin {
   [BepInPlugin(PluginGUID, PluginName, PluginVersion)]
-  [BepInDependency("org.bepinex.plugins.jewelcrafting", BepInDependency.DependencyFlags.SoftDependency)]
   public class ContentsWithin : BaseUnityPlugin {
     public const string PluginGUID = "com.maxsch.valheim.contentswithin";
     public const string PluginName = "ContentsWithin";
@@ -55,7 +54,9 @@ namespace ContentsWithin {
 
       harmony = new Harmony(PluginGUID);
       harmony.PatchAll();
+    }
 
+    private void Start() {
       if (Chainloader.PluginInfos.ContainsKey("org.bepinex.plugins.jewelcrafting")) {
         jewelcraftingOpenInventoryField = GetJewelcraftingOpenInventoryField();
       }
