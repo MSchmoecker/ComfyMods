@@ -22,12 +22,12 @@ namespace ContentsWithin {
     private static bool isRealGuiVisible;
     private static bool showContent = true;
     private static float delayTime;
-    private static Inventory emptyInventory = new Inventory("", null, 0, 0);
 
     private static HashSet<InventoryGrid> initializedGrids = new HashSet<InventoryGrid>();
 
-    private static Container lastHoverContainer;
     private static GameObject lastHoverObject;
+    private static Container lastHoverContainer;
+    private static Container previewContainer;
 
     private static GameObject inventoryPanel;
     private static GameObject infoPanel;
@@ -175,29 +175,30 @@ namespace ContentsWithin {
         }
 
         if (ShowRealGUI()) {
+          previewContainer = null;
+          delayTime = 0;
           return;
         }
 
-        if (HasContainerAccess(lastHoverContainer)) {
-          ShowPreviewContainer(lastHoverContainer.GetInventory());
+        if (lastHoverContainer && HasContainerAccess(lastHoverContainer)) {
+          previewContainer = lastHoverContainer;
           delayTime = openDelayTime.Value;
-        } else if (delayTime > 0) {
-          ShowPreviewContainer(emptyInventory);
+        } else if (previewContainer && delayTime > 0) {
           delayTime -= Time.deltaTime;
         } else {
-          InventoryGui.instance.m_animator.SetBool("visible", false);
+          previewContainer = null;
           delayTime = 0;
+          InventoryGui.instance.m_animator.SetBool("visible", false);
+        }
+
+        if (previewContainer) {
+          ShowPreviewContainer(previewContainer.GetInventory());
         }
       }
 
       private static bool HasContainerAccess(Container container) {
-        if (!container) {
-          return false;
-        }
-
         bool areaAccess = PrivateArea.CheckAccess(container.transform.position, 0f, false, false);
         bool chestAccess = container.CheckAccess(Game.instance.m_playerProfile.m_playerID);
-
         return areaAccess && chestAccess;
       }
 
