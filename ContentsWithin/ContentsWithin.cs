@@ -97,14 +97,6 @@ namespace ContentsWithin {
       }
     }
 
-    [HarmonyPatch(typeof(InventoryGrid))]
-    public static class InventoryGridPatch {
-      [HarmonyPatch(nameof(InventoryGrid.Awake)), HarmonyPostfix]
-      public static void AwakePostfix(InventoryGrid __instance) {
-        initializedGrids.Add(__instance);
-      }
-    }
-
     [HarmonyPatch(typeof(InventoryGui))]
     public class InventoryGuiPatch {
       [HarmonyPatch(nameof(InventoryGui.Awake)), HarmonyPostfix, HarmonyPriority(Priority.Low)]
@@ -217,10 +209,15 @@ namespace ContentsWithin {
       private static void ShowPreviewContainer(Inventory container) {
         InventoryGui.instance.m_animator.SetBool("visible", true);
         InventoryGui.instance.m_hiddenFrames = 10;
+        InventoryGui.instance.m_shownFrames = 0;
+        InventoryGui.instance.m_player.gameObject.SetActive(true);
         InventoryGui.instance.m_container.gameObject.SetActive(true);
 
-        // wait one frame to let the grid initialize properly
-        if (!initializedGrids.Contains(InventoryGui.instance.m_containerGrid)) {
+        InventoryGui.instance.SetActiveGroup(2, false);
+        InventoryGui.instance.UpdateInventory(Player.m_localPlayer);
+
+        if (initializedGrids.Add(InventoryGui.instance.m_containerGrid)) {
+          // wait one frame to let the grid initialize properly
           return;
         }
 
