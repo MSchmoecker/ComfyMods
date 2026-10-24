@@ -1,5 +1,10 @@
 ## Changelog
 
+2.2.0
+* Fixed for Valheim 1.0
+* Changed that both the inventory and container panel are now shown on hover (Valheim changed the object hierarchy of the inventory panels)
+* Changed the hover preview of the last chest to linger, instead of showing an empty inventory
+
 2.1.7
 * Fixed for Valheim 0.220.3
 
